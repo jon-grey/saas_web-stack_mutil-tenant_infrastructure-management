@@ -1,0 +1,6 @@
+[submodule "examples/azure-aks-helm-terraform-cross-namespace-ingress-with-custom-domain"]
+	path = examples/azure-aks-helm-terraform-cross-namespace-ingress-with-custom-domain
+	url = git@github.com:jon-grey/azure-aks-helm-terraform-cross-namespace-ingress-with-custom-domain.git
+[submodule "examples/github-actions_terraform_deploy_to_azure"]
+	path = examples/github-actions_terraform_deploy_to_azure
+	url = github.com:jon-grey/github-actions_terraform_deploy_to_azure.git
