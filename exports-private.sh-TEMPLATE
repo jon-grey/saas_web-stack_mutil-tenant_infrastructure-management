@@ -1,0 +1,16 @@
+#!/bin/bash
+set -euo pipefail
+
+. exports.sh || . ../exports.sh
+
+
+export AZURE_SUBSCRIPTION_ID=""
+export AZURE_RESOURCE_GROUP_DEVS=resource-group-demo-devs
+export AZURE_RESOURCE_GROUP_OPS=resource-group-demo-ops
+export AZURE_STORAGE_ACCOUNT_OPS=storageops${STORAGE_ACC_SUFFIX}
+export AZURE_STORAGE_ACCOUNT_DEVS=storagedevs${STORAGE_ACC_SUFFIX}
+export AZURE_STORAGE_BLOB_TFSTATE=az-terraform-state
+export AZURE_SERVICE_PRINCIPAL=azure-cli-....-00-00
+export AZURE_SERVICE_PRINCIPAL_SDK=azure-cli-sdk-...-00-00
+export AZURE_LOCATION="eastus"
+

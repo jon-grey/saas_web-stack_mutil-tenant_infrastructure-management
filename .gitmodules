@@ -4,3 +4,6 @@
 [submodule "examples/github-actions_terraform_deploy_to_azure"]
 	path = examples/github-actions_terraform_deploy_to_azure
 	url = github.com:jon-grey/github-actions_terraform_deploy_to_azure.git
+[submodule "examples"]
+	path = examples
+	url = git@github.com:jon-grey/infrastructure-management-examples.git

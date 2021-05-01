@@ -1,0 +1,59 @@
+name: Main - Pull Request - Terraform Plan - Az OPS
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  terraform-plan_azure-ops:
+    runs-on: ubuntu-latest
+
+    env:
+      AZURE_STORAGE_BLOB_TFSTATE: az-terraform-state-272660915
+      AZURE_STORAGE_ACCOUNT_OPS: storageops210849
+      ARM_CLIENT_ID: ${{secrets.ARM_CLIENT_ID}}
+      ARM_CLIENT_SECRET: ${{secrets.ARM_CLIENT_SECRET}}
+      ARM_SUBSCRIPTION_ID: ${{secrets.AZURE_SUBSCRIPTION_ID}}
+      ARM_TENANT_ID: ${{secrets.ARM_TENANT_ID}}
+      AZURE_CREDENTIALS: ${{secrets.AZURE_CREDENTIALS}}
+      TF_LOG: DEBUG
+
+    defaults:
+      run:
+        working-directory: ./deployments/terraform/azure-ops
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Terraform Format
+        run: terraform fmt
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform Plan
+        run: terraform plan
+
+      - name: Azure Login
+        uses: azure/login@v1
+        if: ${{ failure() || cancelled() }}        
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: The job has failed or was cancelled, so we break terraform.tfstate blob lease
+        uses: azure/CLI@v1
+        if: ${{ failure() || cancelled() }}
+        with:
+          azcliversion: 2.0.72
+          inlineScript: |
+            isLocked=$(az storage blob show --name "terraform.tfstate" --container-name ${{ env.AZURE_STORAGE_BLOB_TFSTATE }} --account-name ${{ env.AZURE_STORAGE_ACCOUNT_OPS }}  --query "properties.lease.status=='locked'" -o tsv)
+
+            if $isLocked; then
+              az storage blob lease break --blob-name "terraform.tfstate" --container-name ${{ env.AZURE_STORAGE_BLOB_TFSTATE }} --account-name ${{ env.AZURE_STORAGE_ACCOUNT_OPS }}
+            fi
+
