@@ -1,9 +1,6 @@
-
-
-
-resource "helm_release" "ingress_nginx_rules_master" {
+resource "helm_release" "this" {
   namespace  = var.ingress_namespace
-  name       = "helm-customer-${var.customer_id}-ingress-nginx-rules-master"
+  name       = "helm-env-${var.env_id}-ingress-nginx-rules-master"
   chart      = "${path.root}/helm/helm-ingress-rules-master"
   version    = "0.0.1"
 
@@ -17,7 +14,7 @@ resource "helm_release" "ingress_nginx_rules_master" {
   }
   set {
     name  = "ingress_public_url"
-    value = "${var.customer_id}.${var.ingress_azurerm_dns_zone}"
+    value = "${var.env_id}.${var.ingress_azurerm_dns_zone}"
   }
   set {
     name  = "ingress_secret_name"
@@ -27,7 +24,6 @@ resource "helm_release" "ingress_nginx_rules_master" {
     name  = "cert_manager_cluster_issuer"
     value = "letsencrypt-staging"
   }
-
 }
 
 

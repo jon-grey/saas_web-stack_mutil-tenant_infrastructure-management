@@ -12,13 +12,13 @@
 
 
 
-resource "kubernetes_namespace" "ingress_nginx" {
+resource "kubernetes_namespace" "this" {
   metadata {
     name = var.ingress_namespace
   }
 }
 
-resource "helm_release" "ingress_nginx" {
+resource "helm_release" "this" {
   namespace  = var.ingress_namespace
   name       = var.ingress_name 
   chart      = "ingress-nginx"

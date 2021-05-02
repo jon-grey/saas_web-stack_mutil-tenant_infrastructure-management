@@ -20,4 +20,4 @@ spec:
         - containerPort: {{ .Values.containerPort }}
         env:
         - name: TITLE
-          value: {{ .Values.name }}-title-customer-{{ .Values.customer_id }}
+          value: {{ .Values.name }}-title-env-{{ .Values.env_id }}

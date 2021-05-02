@@ -1,3 +1,3 @@
-variable aks_cluster_node_resource_group {}
-variable ingress_azurerm_dns_zone {}
+variable az_resource_group_name {}
+variable az_custom_domain {}
 variable location {}

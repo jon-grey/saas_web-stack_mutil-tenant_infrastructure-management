@@ -29,3 +29,5 @@ if ! test -f "$STORAGE_ACC_SUFFIX_FILE"; then
 fi
 
 STORAGE_ACC_SUFFIX=$(cat $STORAGE_ACC_SUFFIX_FILE)
+
+export WORKSPACES=( "devs" "prod" "stag" "test" )

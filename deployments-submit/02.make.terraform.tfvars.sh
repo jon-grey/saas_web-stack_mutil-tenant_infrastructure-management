@@ -46,11 +46,13 @@ echo "
 TFVARS="../deployments/terraform/azure-aks/terraform.tfvars"
 
 echo "
+date                        = ${DQT}$(date)${DQT}
+
 letencrypt_email            = ${DQT}${LETSENCRYPT_EMAIL}${DQT}
 az_custom_domain            = ${DQT}${CUSTOM_DOMAIN}${DQT}
 
-az_client_id                = ${DQT}${ARM_CLIENT_ID}${DQT}
-az_client_secret            = ${DQT}${ARM_CLIENT_SECRET}${DQT}
+az_arm_client_id            = ${DQT}${ARM_CLIENT_ID}${DQT}
+az_arm_client_secret        = ${DQT}${ARM_CLIENT_SECRET}${DQT}
 az_location                 = ${DQT}${AZURE_LOCATION}${DQT}
 az_resource_group_name      = ${DQT}${AZURE_RESOURCE_GROUP_DEVS}${DQT}
 az_container_registry_name  = ${DQT}${AZURE_CONTAINER_REGISTRY}${DQT}
@@ -59,7 +61,6 @@ az_aks_dns_prefix           = ${DQT}${AZURE_AKS_DNS_PREFIX}${DQT}
 az_aks_cluster_name         = ${DQT}${AZURE_AKS_CLUSTER_NAME}${DQT}
 az_aks_admin_username       = ${DQT}${AZURE_AKS_NODES_ADMIN}${DQT}
 
-date                        = ${DQT}$(date)${DQT}
 " > $TFVARS
 cat $TFVARS
 

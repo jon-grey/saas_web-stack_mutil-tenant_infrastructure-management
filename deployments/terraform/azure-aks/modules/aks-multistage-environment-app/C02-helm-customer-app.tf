@@ -1,20 +1,18 @@
-resource "kubernetes_namespace" "customer_ns" {
+resource "kubernetes_namespace" "this" {
   metadata {
-    name = "customer-${var.customer_id}-ns"
+    name = "env-${var.env_id}-ns"
   }
 }
 
-
-
-resource "helm_release" "customer_app" {
-  namespace  = "customer-${var.customer_id}-ns"
-  name       = "helm-customer-${var.customer_id}-app"
-  chart      = "${path.root}/helm/helm-customer-app"
+resource "helm_release" "this" {
+  namespace  = "env-${var.env_id}-ns"
+  name       = "helm-env-${var.env_id}-app"
+  chart      = "${path.root}/helm/helm-env-app"
   version    = "0.0.1"
 
   set {
-    name  = "customer_id"
-    value =  var.customer_id
+    name  = "env_id"
+    value =  var.env_id
   }
   set {
     name  = "name"
@@ -42,7 +40,7 @@ resource "helm_release" "customer_app" {
   }
 
   depends_on = [
-      kubernetes_namespace.customer_ns,
+      kubernetes_namespace.this,
   ]
 }
 

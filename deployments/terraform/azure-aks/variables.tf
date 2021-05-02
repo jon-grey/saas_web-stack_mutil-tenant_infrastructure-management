@@ -1,13 +1,16 @@
+variable "date" {
+}
+
 variable "letencrypt_email" {
   description = "Email to be used with ClusterIssuer for CertManager"
 }
 variable "az_custom_domain" {
   description = "Custom domain ie. example.com used by AKS nginx ingress."
 }
-variable "az_client_id" {
+variable "az_arm_client_id" {
   description = "Azure Kubernetes Service Cluster service principal"
 }
-variable "az_client_secret" {
+variable "az_arm_client_secret" {
   description = "Azure Kubernetes Service Cluster password"
 }
 variable "az_location" {
@@ -28,8 +31,7 @@ variable "az_aks_cluster_name" {
 variable "az_aks_agent_count" {
   default = 1
 }
-variable "date" {
-}
+
 variable "az_aks_version" {
   default = "1.19.9"
 }
@@ -40,6 +42,16 @@ variable "az_aks_admin_username" {
 variable "az_aks_default_namespace" {
   description = "Namespace where to deploy things on K8s"
   default     = "default"
+}
+
+variable "az_aks_namespaces" {
+  description = "Map of namespaces names for multistage environments"
+  default = [
+    "devs",
+    "test",
+    "stag",
+    "prod",
+  ]
 }
 
 # cert manager
@@ -79,9 +91,4 @@ variable "az_aks_ingress_certificate_letsencrypt_name" {
   default = "tls-secret-staging"
 }
 
-# customer app
-
-variable "customer_id" {
-  default = "demo000"
-}
 

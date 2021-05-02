@@ -6,7 +6,7 @@ echo "
 #### Install kubectl if not existing
 ###########################################################################"
 
-if ! (test kubectl --version &> /dev/null); then
+if ! (kubectl help &> /dev/null); then
     cowsay "Update the apt package index and install packages needed to use the Kubernetes apt repository:"
     sudo apt-get update
     sudo apt-get install -y apt-transport-https ca-certificates curl

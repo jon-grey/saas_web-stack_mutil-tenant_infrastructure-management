@@ -21,6 +21,16 @@ az account set --subscription $AZURE_SUBSCRIPTION_ID
     terraform init 
     echo "... with RC ==> $?"
 
+    cowsay "Create backend workspaces, $PWD..."
+    # TODO multiple clusters, each for different stage
+    for wsp in ${WORKSPACES[@]}; do
+        terraform workspace new $wsp || true
+    done
+    cowsay "Select backend workspace: multistage, $PWD..."
+    # NOTE currently multistage cluster
+    terraform workspace new multistage || true
+    terraform workspace select multistage
+    
     cowsay "Validate terraform confif files $PWD..."
     terraform validate
     echo "... with RC ==> $?"

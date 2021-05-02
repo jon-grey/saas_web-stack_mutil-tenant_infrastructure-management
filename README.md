@@ -2,6 +2,8 @@
 # TODO
 
 [x] - share one azure storage account with other github projects, but use different blobs
+[x] - multistage namespaces
+[ ] - multistage clusters to replace multistage namespaces
 
 NEW ISSUE
 
@@ -47,6 +49,89 @@ make submit-deployments
 
 In github 
 
+
+# Best Practices
+
+## Terraform
+
+
+### Workspaces
+
+```sh
+export WORKSPACES=( "devs" "prod" "stag" "test" )
+for wsp in ${WORKSPACES[@]}; do
+    terraform workspace new $wsp || true
+done
+
+terraform workspace select ${WORKSPACES[0]}
+```
+
+and separate tfstate file to avoid deadlocks
+
+```sh
+for wsp in ${WORKSPACES[@]}; do
+echo "
+terraform {
+  backend ${DQT}azurerm${DQT} {
+    resource_group_name  = ${DQT}${AZURE_RESOURCE_GROUP_OPS}${DQT}
+    storage_account_name = ${DQT}${AZURE_STORAGE_ACCOUNT_OPS}${DQT}
+    container_name       = ${DQT}${wsp}-${AZURE_STORAGE_BLOB_TFSTATE_LOCAL_AKS}${DQT}
+    key                  = ${DQT}${wsp}-terraform.tfstate${DQT}
+  }
+}
+
+" > "../deployments/terraform/azure-aks/workspaces/${wsp}/provider.tf"
+```
+
+access with
+
+```js
+env="${terraform.workspace}"
+```
+
+with dirs layout
+
+```s
+workspaces/
+ |
+ |-prod/
+     |
+     |-main.tf (has one backend setting; references a module in ../shared)
+ |-dev/
+     |
+     |-main.tf (has a different backend setting; references a module in ../shared)
+ |-shared/
+     | 
+     |- main.tf (etc.)
+
+```
+### Locals based on workspaces
+
+[Terraform workspaces and locals for environment separation](https://medium.com/@diogok/terraform-workspaces-and-locals-for-environment-separation-a5b88dd516f5)
+
+```js
+provider "aws" {
+  region= "us-east-1"
+}
+locals {
+  env="${terraform.workspace}"
+  counts = {
+    "default"=1
+    "production"=3
+  }
+  instances = {
+    "default"="t2.micro"
+    "production"="t4.large"
+  }
+  instance_type="${lookup(local.instances,local.env)}"
+  count="${lookup(local.counts,local.env)}"
+}
+resource "aws_instance" "my_service" {
+  ami="ami-7b4d7900"
+  instance_type="${local.instance_type}"
+  count="${local.count}"
+}
+```
 
 # Issues
 

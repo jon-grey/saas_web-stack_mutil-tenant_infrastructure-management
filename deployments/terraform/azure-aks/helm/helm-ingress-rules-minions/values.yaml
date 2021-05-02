@@ -1,6 +1,6 @@
 app_name: "<error>"
-customer_id: "<error>"
-customer_ns: "<error>"
+env_id: "<error>"
+env_ns: "<error>"
 ingress_class: "<error>"
 ingress_public_url: "<error>"
 app_container_port: 80

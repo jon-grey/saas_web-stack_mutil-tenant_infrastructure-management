@@ -14,7 +14,7 @@ spec:
     http:
       paths:
       - backend:
-          serviceName:  {{ .Values.customer_id }}-{{ .Values.app_name }}-extnme-svc
+          serviceName:  {{ .Values.env_id }}-{{ .Values.app_name }}-extnme-svc
           servicePort: {{ .Values.app_container_port }}
         path: "/"
 

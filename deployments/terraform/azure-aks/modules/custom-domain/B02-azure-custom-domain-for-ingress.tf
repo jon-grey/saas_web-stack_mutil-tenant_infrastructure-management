@@ -1,24 +1,24 @@
 
 
 
-resource "azurerm_public_ip" "ingress" {
+resource "azurerm_public_ip" "this" {
   name                = "ingressStaticIpName"
-  resource_group_name = var.aks_cluster_node_resource_group
+  resource_group_name = var.az_resource_group_name
   location            = var.location
   allocation_method   = "Static"
   sku                 = "Standard"
   ip_version          = "IPv4"
   tags = {
-    environment = "Demo"
+    environment = "multistage"
   }
 }
 
 
-resource "azurerm_dns_zone" "ingress" {
-  name                = var.ingress_azurerm_dns_zone
-  resource_group_name = var.aks_cluster_node_resource_group
+resource "azurerm_dns_zone" "this" {
+  name                = var.az_custom_domain
+  resource_group_name = var.az_resource_group_name
   depends_on = [
-      azurerm_public_ip.ingress,
+      azurerm_public_ip.this,
   ]
 
 }
@@ -35,17 +35,17 @@ resource "azurerm_dns_zone" "ingress" {
 #      --record-set-name '*' \
 #      --ipv4-address "20.79.66.102"
 
-resource "azurerm_dns_a_record" "ingress" {
+resource "azurerm_dns_a_record" "this" {
   name                = "*"
-  zone_name           = azurerm_dns_zone.ingress.name
-  resource_group_name = var.aks_cluster_node_resource_group
+  zone_name           = azurerm_dns_zone.this.name
+  resource_group_name = var.az_resource_group_name
   ttl = 300
 
-  records = [azurerm_public_ip.ingress.ip_address]
+  records = [azurerm_public_ip.this.ip_address]
 
 
   depends_on = [
-      azurerm_dns_zone.ingress,
+      azurerm_dns_zone.this,
   ]
 
 }

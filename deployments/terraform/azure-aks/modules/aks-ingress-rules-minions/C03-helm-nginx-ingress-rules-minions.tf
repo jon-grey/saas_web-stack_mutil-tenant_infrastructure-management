@@ -1,6 +1,6 @@
-resource "helm_release" "ingress_nginx_rules_minions" {
+resource "helm_release" "this" {
   namespace  = var.ingress_namespace
-  name       = "helm-customer-${var.customer_id}-ingress-nginx-rules-minions"
+  name       = "helm-env-${var.env_id}-ingress-nginx-rules-minions"
   chart      = "${path.root}/helm/helm-ingress-rules-minions"
   version    = "0.0.1"
   
@@ -10,19 +10,19 @@ resource "helm_release" "ingress_nginx_rules_minions" {
   }
   set {
     name  = "ingress_public_url"
-    value = "${var.customer_id}.${var.ingress_azurerm_dns_zone}"
+    value = "${var.env_id}.${var.ingress_azurerm_dns_zone}"
   }
   set {
     name  = "app_name"
     value = "app-frontend"
   }
   set {
-    name  = "customer_ns"
-    value = var.customer_ns
+    name  = "env_ns"
+    value = var.env_ns
   }
   set {
-    name  = "customer_id"
-    value = var.customer_id
+    name  = "env_id"
+    value = var.env_id
   }
   set {
     name  = "app_container_port"

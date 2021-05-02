@@ -21,20 +21,18 @@ provider "azurerm" {
 #######################################################################################
 #### STAGE A 1.0
 #######################################################################################
+resource "azurerm_resource_group" "devs" {
+  name     = var.az_resource_group_name
+  location = var.az_location
 
-data "azurerm_resource_group" "devs" {
-  name = var.az_resource_group_name
-  # location = var.az_location
-
-  # tags = {
-  #   environment = "Demo"
-  # }
+  tags = {
+    environment = "multistage"
+  }
 }
 
 #######################################################################################
 #### STAGE A 1.1
 #######################################################################################
-
 module "a_acr" {
   source = "./modules/acr"
 
@@ -43,12 +41,28 @@ module "a_acr" {
   container_registry_name = var.az_container_registry_name
 
   depends_on = [
+    azurerm_resource_group.devs
   ]
 }
+
+#######################################################################################
+#### STAGE A 1.1 - Deploy custom domain for aks
+#######################################################################################
+module "a_custom_domain" {
+  source = "./modules/custom-domain"
+
+  location               = var.az_location
+  az_custom_domain       = var.az_custom_domain
+  az_resource_group_name = var.az_resource_group_name
+
+  depends_on = [
+    azurerm_resource_group.devs
+  ]
+}
+
 #######################################################################################
 #### STAGE A 1.1
 #######################################################################################
-
 module "a_aks_cluster" {
   source = "./modules/aks-cluster"
 
@@ -58,17 +72,17 @@ module "a_aks_cluster" {
   dns_prefix          = var.az_aks_dns_prefix
   admin_username      = var.az_aks_admin_username
   agent_count         = var.az_aks_agent_count
-  client_id           = var.az_client_id
-  client_secret       = var.az_client_secret
+  client_id           = var.az_arm_client_id
+  client_secret       = var.az_arm_client_secret
   kubernetes_version  = var.az_aks_version
 
   depends_on = [
+    azurerm_resource_group.devs
   ]
 }
 #######################################################################################
 #### STAGE A 2.0
 #######################################################################################
-
 resource "local_file" "aksconfig" {
   content  = module.a_aks_cluster.kube_config
   filename = pathexpand("~/.kube/aksconfig")
@@ -105,8 +119,8 @@ provider "helm" {
 #######################################################################################
 #### STAGE B 1.0 - Deploy ASK/cert-manager-ns/cert-manager
 #######################################################################################
-module "b_cert_manager" {
-  source = "./modules/cert-manager"
+module "b_aks_cert_manager" {
+  source = "./modules/aks-cert-manager"
 
   email                                        = var.letencrypt_email
   cert_manager_namespace                       = var.az_aks_cert_manager_namespace
@@ -129,71 +143,45 @@ module "b_cert_manager" {
 }
 
 #######################################################################################
-#### STAGE B 1.0 - Deploy custom domain for customer app
-#######################################################################################
-module "b_custom_domain" {
-  source = "./modules/custom-domain"
-
-  location                        = var.az_location
-  ingress_azurerm_dns_zone        = var.az_custom_domain
-  aks_cluster_node_resource_group = module.a_aks_cluster.node_resource_group
-
-  depends_on = [
-    module.a_aks_cluster,
-    local_file.aksconfig
-  ]
-}
-
-#######################################################################################
 #### STAGE B 2.0 - Deploy ingress nginx controller
 #######################################################################################
-module "b_ingress_nginx_controller" {
-  source = "./modules/ingress-controller"
+module "b_aks_ingress_nginx_controller" {
+  source = "./modules/aks-ingress-controller"
 
   ingress_controller_class = var.az_aks_ingress_controller_class
   ingress_namespace        = var.az_aks_ingress_namespace
   ingress_name             = var.az_aks_ingress_name
-  ingress_ip_address       = module.b_custom_domain.ip_address
+  ingress_ip_address       = module.a_custom_domain.ip_address
 
   depends_on = [
     module.a_aks_cluster.azurerm_kubernetes_cluster,
-    module.b_custom_domain,
+    module.a_custom_domain,
     local_file.aksconfig,
   ]
 }
 
 #######################################################################################
-#### STAGE C 1.0 - Deploy customers resources
+#### STAGE C 1.0 - Deploy multi stage environment resources
 #######################################################################################
+module "c_aks_multistage_envs" {
+  source = "./modules/aks-multistage-environment"
 
-variable "customers_list" {
-  description = "Map of customers IDs"
-  default = [
-    "demo000",
-    "demo001",
-    "demo002",
-  ]
-}
-
-module "c_customers" {
-  source = "./modules/customer"
-
-  for_each    = toset(var.customers_list)
-  customer_id = each.key
+  for_each = toset(var.az_aks_namespaces)
+  env_id   = each.key
 
   # ingress_name = var.ingress_name
   ingress_namespace                    = var.az_aks_ingress_namespace
-  ingress_controller_class             = var.az_aks_ingress_controller_class
   ingress_azurerm_dns_zone             = var.az_custom_domain
+  ingress_controller_class             = var.az_aks_ingress_controller_class
   ingress_certificate_letsencrypt_name = var.az_aks_ingress_certificate_letsencrypt_name
 
-  ingress_ip_address = module.b_custom_domain.ip_address
+  ingress_ip_address = module.a_custom_domain.ip_address
 
   depends_on = [
-    module.a_aks_cluster.azurerm_kubernetes_cluster,
+    module.a_custom_domain,
     module.a_acr.azurerm_container_registry,
-    module.b_custom_domain,
-    module.b_cert_manager,
+    module.a_aks_cluster.azurerm_kubernetes_cluster,
+    module.b_aks_cert_manager,
     local_file.aksconfig,
   ]
 }
