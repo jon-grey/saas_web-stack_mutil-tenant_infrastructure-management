@@ -1,7 +1,11 @@
 name: Any - Push - Docker Compose Test
 
-on: push
-
+on: 
+  push:
+    paths:
+      - 'deployments/docker-compose/app-flask-redis/**'
+      - 'deployments-setup/**'
+      - 'deployments-submit/**'
 jobs:
   docker-compose-test:
     runs-on: ubuntu-latest

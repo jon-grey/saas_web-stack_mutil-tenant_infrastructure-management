@@ -11,7 +11,7 @@ echo "
 az account set --subscription $AZURE_SUBSCRIPTION_ID
 
 (
-    cd ../deployments/docker-compose
+    cd ../deployments/docker-compose/app-flask-redis
 
     docker-compose up -d
 

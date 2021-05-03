@@ -3,6 +3,10 @@ name: Main - Pull Request - Terraform Plan - Az AKS
 on:
   pull_request:
     branches: [ main ]
+    paths:
+      - 'deployments/terraform/azure-aks/**'
+      - 'deployments-setup/**'
+      - 'deployments-submit/**'
 
 jobs:
   terraform-plan_azure-aks:

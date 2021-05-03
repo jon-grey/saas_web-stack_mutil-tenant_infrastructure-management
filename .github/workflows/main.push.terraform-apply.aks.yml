@@ -2,7 +2,10 @@ name: Main - Push - Terraform Apply - Az AKS
 
 on:
   push:
-    branches: [ main ]
+    paths:
+      - 'deployments/terraform/azure-aks/**'
+      - 'deployments-setup/**'
+      - 'deployments-submit/**'
 
 jobs:
   terraform-apply_azure-aks:

@@ -3,6 +3,8 @@ name: Main - Pull Request - Terraform Plan - Az OPS
 on:
   pull_request:
     branches: [ main ]
+    paths:
+      - 'deployments/terraform/azure-ops'
 
 jobs:
   terraform-plan_azure-ops:

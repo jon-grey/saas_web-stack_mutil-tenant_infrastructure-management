@@ -3,6 +3,10 @@ name: Main - Push - Terraform Apply - Az OPS
 on:
   push:
     branches: [ main ]
+    paths:
+      - 'deployments/terraform/azure-ops/**'
+      - 'deployments-setup/**'
+      - 'deployments-submit/**'
 
 jobs:
   terraform-apply_azure-ops:
