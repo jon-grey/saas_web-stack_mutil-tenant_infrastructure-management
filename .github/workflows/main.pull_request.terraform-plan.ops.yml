@@ -4,7 +4,9 @@ on:
   pull_request:
     branches: [ main ]
     paths:
-      - 'deployments/terraform/azure-ops'
+      - 'deployments/terraform/azure-ops/**'
+      - 'deployments-setup/**'
+      - 'deployments-submit/**'
 
 jobs:
   terraform-plan_azure-ops:
@@ -32,8 +34,11 @@ jobs:
       - name: Terraform Format
         run: terraform fmt
 
-      - name: Terraform Init
-        run: terraform init
+      - name: Terraform Init - upgrade
+        run: terraform init -upgrade 
+
+      - name: Terraform Workspace - select multistage
+        run: terraform workspace select multistage
 
       - name: Terraform Validate
         run: terraform validate

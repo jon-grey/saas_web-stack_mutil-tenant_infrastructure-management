@@ -34,8 +34,11 @@ jobs:
       - name: Terraform Format
         run: terraform fmt
 
-      - name: Terraform Init
-        run: terraform init
+      - name: Terraform Init - upgrade
+        run: terraform init -upgrade 
+
+      - name: Terraform Workspace - select multistage
+        run: terraform validate
 
       - name: Terraform Validate
         run: terraform validate

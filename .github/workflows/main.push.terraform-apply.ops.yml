@@ -34,17 +34,20 @@ jobs:
       - name: Terraform Format
         run: terraform fmt
 
-      - name: Terraform Init
+      - name: Terraform Init (backend)
         run: terraform init
+      
+      - name: Terraform Workspace - select multistage
+        run: terraform workspace select multistage
 
       - name: Terraform Validate
         run: terraform validate
 
       - name: Terraform Plan
-        run: terraform plan
+        run: terraform plan -out="ops.multistage.tfplan"
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve
+        run: terraform apply -auto-approve "ops.multistage.tfplan"
 
       - name: Azure Login
         uses: azure/login@v1

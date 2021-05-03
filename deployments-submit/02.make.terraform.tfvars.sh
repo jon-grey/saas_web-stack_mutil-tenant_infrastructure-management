@@ -107,7 +107,6 @@ echo "
 ###########################################################################"
 
 for fp in ../.github/workflows/*.ops.yml; do
-
   sed \
     -i "s/AZURE_STORAGE_BLOB_TFSTATE:\s.*/AZURE_STORAGE_BLOB_TFSTATE: ${AZURE_STORAGE_BLOB_TFSTATE_LOCAL_OPS}/" \
     $fp
@@ -115,12 +114,10 @@ for fp in ../.github/workflows/*.ops.yml; do
   sed \
     -i "s/AZURE_STORAGE_ACCOUNT_OPS:\s.*/AZURE_STORAGE_ACCOUNT_OPS: ${AZURE_STORAGE_ACCOUNT_OPS}/" \
     $fp
-
 done
 
 
 for fp in ../.github/workflows/*.aks.yml; do
-
   sed \
     -i "s/AZURE_STORAGE_BLOB_TFSTATE:\s.*/AZURE_STORAGE_BLOB_TFSTATE: ${AZURE_STORAGE_BLOB_TFSTATE_LOCAL_AKS}/" \
     $fp
@@ -128,6 +125,5 @@ for fp in ../.github/workflows/*.aks.yml; do
   sed \
     -i "s/AZURE_STORAGE_ACCOUNT_OPS:\s.*/AZURE_STORAGE_ACCOUNT_OPS: ${AZURE_STORAGE_ACCOUNT_OPS}/" \
     $fp
-
 done
 
