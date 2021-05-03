@@ -4,6 +4,7 @@ on:
   push:
     branches: [ main ]
     paths:
+      - '.github/workflows/push.main.terraform-apply.aks.yml'
       - 'deployments/terraform/azure-aks/**'
       - 'deployments-setup/**'
       - 'deployments-submit/**'
