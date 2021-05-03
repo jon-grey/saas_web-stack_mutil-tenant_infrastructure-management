@@ -38,9 +38,6 @@ jobs:
       - name: Terraform Init - upgrade
         run: terraform init -upgrade 
 
-      - name: Terraform Workspace - select multistage
-        run: terraform workspace select multistage
-
       - name: Terraform Validate
         run: terraform validate
 
