@@ -1,30 +1,30 @@
-name: Main - Pull Request - Terraform Plan - Az AKS
+name: Main - Pull Request - Terraform Plan - Az OPS
 
 on:
   pull_request:
     branches: [ main ]
     paths:
-      - 'deployments/terraform/azure-aks/**'
+      - 'deployments/terraform/azure-ops/**'
       - 'deployments-setup/**'
       - 'deployments-submit/**'
 
 jobs:
-  terraform-plan_azure-aks:
+  terraform-plan_azure-ops:
     runs-on: ubuntu-latest
 
     env:
-      AZURE_STORAGE_BLOB_TFSTATE: az-terraform-state-288838384
+      AZURE_STORAGE_BLOB_TFSTATE: az-terraform-state-272660915
       AZURE_STORAGE_ACCOUNT_OPS: storageops210849
-      ARM_CLIENT_ID: ${{secrets.ARM_CLIENT_ID}}
+      ARM_CLIENT_ID: ${{fromJSON(secrets.AZURE_CREDENTIALS).clientId}}
       ARM_CLIENT_SECRET: ${{secrets.ARM_CLIENT_SECRET}}
       ARM_SUBSCRIPTION_ID: ${{secrets.AZURE_SUBSCRIPTION_ID}}
       ARM_TENANT_ID: ${{secrets.ARM_TENANT_ID}}
       AZURE_CREDENTIALS: ${{secrets.AZURE_CREDENTIALS}}
-      TF_LOG: DEBUG
+      TF_LOG: ERROR
 
     defaults:
       run:
-        working-directory: ./deployments/terraform/azure-aks
+        working-directory: ./deployments/terraform/azure-ops
     steps:
       - uses: actions/checkout@v2
 
@@ -38,7 +38,7 @@ jobs:
         run: terraform init -upgrade 
 
       - name: Terraform Workspace - select multistage
-        run: terraform validate
+        run: terraform workspace select multistage
 
       - name: Terraform Validate
         run: terraform validate

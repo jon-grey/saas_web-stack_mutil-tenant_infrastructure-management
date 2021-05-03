@@ -48,7 +48,6 @@ bash 03.setup.azure.blob.terraform-tfstate.sh
 # bash 04.apply.local.terraform.ops.sh
 bash 04.apply.local.terraform.aks.sh
 
-
 git add --all
 git commit -m "Lazy update at $(date)."
 git push --set-upstream origin $(git rev-parse --abbrev-ref HEAD)
