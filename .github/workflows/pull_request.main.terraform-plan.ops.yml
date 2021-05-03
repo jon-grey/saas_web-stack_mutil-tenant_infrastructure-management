@@ -17,10 +17,10 @@ jobs:
       AZURE_STORAGE_BLOB_TFSTATE: az-terraform-state-272660915
       AZURE_STORAGE_ACCOUNT_OPS: storageops210849
       AZURE_CREDENTIALS:   ${{ secrets.AZURE_CREDENTIALS }}
-      ARM_CLIENT_ID:       ${{ secrets[ fromJSON(secrets.AZURE_CREDENTIALS).clientId ] }}
-      ARM_CLIENT_SECRET:   ${{ secrets[ fromJSON(secrets.AZURE_CREDENTIALS).clientSecret ] }}
-      ARM_SUBSCRIPTION_ID: ${{ secrets[ fromJSON(secrets.AZURE_CREDENTIALS).subscriptionId ] }}
-      ARM_TENANT_ID:       ${{ secrets[ fromJSON(secrets.AZURE_CREDENTIALS).tenantId ] }}
+      ARM_CLIENT_ID:       ${{ fromJSON(secrets.AZURE_CREDENTIALS).clientId }}
+      ARM_CLIENT_SECRET:   ${{ fromJSON(secrets.AZURE_CREDENTIALS).clientSecret }}
+      ARM_SUBSCRIPTION_ID: ${{ fromJSON(secrets.AZURE_CREDENTIALS).subscriptionId }}
+      ARM_TENANT_ID:       ${{ fromJSON(secrets.AZURE_CREDENTIALS).tenantId }}
       TF_LOG: ERROR
 
     defaults:

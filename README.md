@@ -1,6 +1,13 @@
 
 # TODO
 
+## Split DevOps and Admin
+
+- [ ] create github secrets from code [gliech/create-github-secret-action](https://github.com/gliech/create-github-secret-action)
+- [ ] hide secrets from DevOps
+- [ ] move secrets to KeyVault
+- [ ] use keyvault in github actions [Azure/get-keyvault-secrets](https://github.com/Azure/get-keyvault-secrets)
+
 ## AKS
 
 ### Networking
