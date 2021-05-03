@@ -45,20 +45,6 @@ module "a_acr" {
   ]
 }
 
-#######################################################################################
-#### STAGE A 1.1 - Deploy custom domain for aks
-#######################################################################################
-module "a_custom_domain" {
-  source = "./modules/custom-domain"
-
-  location               = var.az_location
-  az_custom_domain       = var.az_custom_domain
-  az_resource_group_name = var.az_resource_group_name
-
-  depends_on = [
-    azurerm_resource_group.devs
-  ]
-}
 
 #######################################################################################
 #### STAGE A 1.1
@@ -115,6 +101,24 @@ provider "helm" {
   }
 }
 
+#######################################################################################
+#### STAGE B 1.0 - Deploy custom domain for aks
+#### NOTE: has to be in same resource group as 
+#######################################################################################
+module "b_custom_domain_for_aks_ingress" {
+  source = "./modules/custom-domain"
+
+  az_custom_domain       = var.az_custom_domain
+  location               = module.a_aks_cluster.location
+  az_resource_group_name = module.a_aks_cluster.node_resource_group
+
+  depends_on = [
+    module.a_aks_cluster.azurerm_kubernetes_cluster,
+    azurerm_resource_group.devs
+  ]
+}
+
+
 
 #######################################################################################
 #### STAGE B 1.0 - Deploy ASK/cert-manager-ns/cert-manager
@@ -129,7 +133,7 @@ module "b_aks_cert_manager" {
   ingress_controller_class                     = var.az_aks_ingress_controller_class
   ingress_namespace                            = var.az_aks_ingress_namespace
   ingress_certificate_letsencrypt_staging_name = var.az_aks_ingress_certificate_letsencrypt_staging_name
-  ingress_azurerm_dns_zone                     = var.az_custom_domain
+  az_custom_domain                     = var.az_custom_domain
 
   host                   = module.a_aks_cluster.host
   client_key             = module.a_aks_cluster.client_key
@@ -151,11 +155,11 @@ module "b_aks_ingress_nginx_controller" {
   ingress_controller_class = var.az_aks_ingress_controller_class
   ingress_namespace        = var.az_aks_ingress_namespace
   ingress_name             = var.az_aks_ingress_name
-  ingress_ip_address       = module.a_custom_domain.ip_address
+  ingress_ip_address       = module.b_custom_domain_for_aks_ingress.ip_address
 
   depends_on = [
     module.a_aks_cluster.azurerm_kubernetes_cluster,
-    module.a_custom_domain,
+    module.b_custom_domain_for_aks_ingress,
     local_file.aksconfig,
   ]
 }
@@ -171,14 +175,14 @@ module "c_aks_multistage_envs" {
 
   # ingress_name = var.ingress_name
   ingress_namespace                    = var.az_aks_ingress_namespace
-  ingress_azurerm_dns_zone             = var.az_custom_domain
+  az_custom_domain                     = var.az_custom_domain
   ingress_controller_class             = var.az_aks_ingress_controller_class
   ingress_certificate_letsencrypt_name = var.az_aks_ingress_certificate_letsencrypt_name
 
-  ingress_ip_address = module.a_custom_domain.ip_address
+  ingress_ip_address = module.b_custom_domain_for_aks_ingress.ip_address
 
   depends_on = [
-    module.a_custom_domain,
+    module.b_custom_domain_for_aks_ingress,
     module.a_acr.azurerm_container_registry,
     module.a_aks_cluster.azurerm_kubernetes_cluster,
     module.b_aks_cert_manager,

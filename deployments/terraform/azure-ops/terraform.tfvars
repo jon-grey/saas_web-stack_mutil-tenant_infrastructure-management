@@ -5,5 +5,5 @@ az_storage_account_ops      = "storageops210849"
 az_storage_account_devs     = "storagedevs210849"
 az_resource_group_name_devs = "resource-group-demo-devs"
 az_resource_group_name_ops  = "resource-group-demo-ops"
-date                        = "Sun May  2 20:46:27 CEST 2021"
+date                        = "Mon May  3 10:07:00 CEST 2021"
 

@@ -1,10 +1,10 @@
-resource "kubernetes_namespace" "this" {
+resource "kubernetes_namespace" "env_app" {
   metadata {
     name = "env-${var.env_id}-ns"
   }
 }
 
-resource "helm_release" "this" {
+resource "helm_release" "env_app" {
   namespace  = "env-${var.env_id}-ns"
   name       = "helm-env-${var.env_id}-app"
   chart      = "${path.root}/helm/helm-env-app"
@@ -40,7 +40,7 @@ resource "helm_release" "this" {
   }
 
   depends_on = [
-      kubernetes_namespace.this,
+      kubernetes_namespace.env_app,
   ]
 }
 

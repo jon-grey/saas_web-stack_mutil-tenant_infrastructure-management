@@ -31,7 +31,7 @@ resource "helm_release" "cert_manager" {
 
 }
 
-resource "helm_release" "lets_encrypt_cluster_issuer_staging" {
+resource "helm_release" "letsencrypt_cluster_issuer_staging" {
   name       = "helm-letsencrypt-cluster-issuer-staging"
   chart      = "${path.root}/helm/helm-letsencrypt-cluster-issuer"
   version    = "0.0.1"
@@ -78,7 +78,7 @@ resource "helm_release" "lets_encrypt_cluster_issuer_staging" {
 #   }
 #   set {
 #     name  = "domain_name"
-#     value = var.ingress_azurerm_dns_zone
+#     value = var.az_custom_domain
 #   }
   
 #   depends_on = [
@@ -124,7 +124,7 @@ resource "helm_release" "lets_encrypt_cluster_issuer_staging" {
 #   }
 #   set {
 #     name  = "domain_name"
-#     value = var.ingress_azurerm_dns_zone
+#     value = var.az_custom_domain
 #   }
 # }
 

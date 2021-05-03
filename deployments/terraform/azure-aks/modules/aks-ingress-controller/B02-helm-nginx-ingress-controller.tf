@@ -10,15 +10,13 @@
 #     --set controller.service.externalTrafficPolicy=Local \
 #     --set controller.ingressClass="$INGRESS_NAMESPACE"
 
-
-
-resource "kubernetes_namespace" "this" {
+resource "kubernetes_namespace" "ingress" {
   metadata {
     name = var.ingress_namespace
   }
 }
 
-resource "helm_release" "this" {
+resource "helm_release" "ingress" {
   namespace  = var.ingress_namespace
   name       = var.ingress_name 
   chart      = "ingress-nginx"
