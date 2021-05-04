@@ -18,10 +18,11 @@ jobs:
       AZURE_STORAGE_BLOB_TFSTATE: az-terraform-state-288838384
       AZURE_STORAGE_ACCOUNT_OPS: storageops210849
       AZURE_CREDENTIALS:   ${{ secrets.AZURE_CREDENTIALS }}
-      # ARM_TENANT_ID:       ${{ secrets.ARM_TENANT_ID }}
-      # ARM_CLIENT_ID:       ${{ secrets.ARM_CLIENT_ID }}
+      ARM_TENANT_ID:       ${{ secrets.ARM_TENANT_ID }}
+      ARM_CLIENT_ID:       ${{ secrets.ARM_CLIENT_ID }}
       # ARM_CLIENT_SECRET:   ${{ secrets.ARM_CLIENT_SECRET }}
-      # AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      ARM_USE_MSI: true
       TF_LOG: ERROR
 
     defaults:
@@ -29,11 +30,6 @@ jobs:
         working-directory: ./deployments/terraform/azure-aks
     steps:
       - uses: actions/checkout@v2
-
-      - name: Azure Login
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
