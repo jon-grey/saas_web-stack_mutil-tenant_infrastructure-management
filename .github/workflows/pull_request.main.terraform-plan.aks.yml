@@ -20,9 +20,8 @@ jobs:
       AZURE_CREDENTIALS:   ${{ secrets.AZURE_CREDENTIALS }}
       ARM_TENANT_ID:       ${{ secrets.ARM_TENANT_ID }}
       ARM_CLIENT_ID:       ${{ secrets.ARM_CLIENT_ID }}
-      # ARM_CLIENT_SECRET:   ${{ secrets.ARM_CLIENT_SECRET }}
+      ARM_CLIENT_SECRET:   ${{ secrets.ARM_CLIENT_SECRET }}
       AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      ARM_USE_MSI: true
       TF_LOG: ERROR
 
     defaults:
