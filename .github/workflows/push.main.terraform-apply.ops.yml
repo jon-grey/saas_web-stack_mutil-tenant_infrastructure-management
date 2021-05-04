@@ -1,6 +1,7 @@
 name: Main - Push - Terraform Apply - Az OPS
 
 on:
+  workflow_dispatch: # to run manually
   push:
     branches: [ main ]
     paths:

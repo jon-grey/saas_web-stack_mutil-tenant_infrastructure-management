@@ -1,6 +1,7 @@
 name: Main - Pull Request - Terraform Plan - Az AKS
 
 on:
+  workflow_dispatch: # to run manually
   pull_request:
     branches: [ main ]
     paths:
