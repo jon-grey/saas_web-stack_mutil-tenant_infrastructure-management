@@ -21,7 +21,7 @@ jobs:
       ARM_TENANT_ID:       ${{ secrets.ARM_TENANT_ID }}
       ARM_CLIENT_ID:       ${{ secrets.ARM_CLIENT_ID }}
       ARM_CLIENT_SECRET:   ${{ secrets.ARM_CLIENT_SECRET }}
-      ARM_USE_MSI: true
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       TF_LOG: ERROR
 
     defaults:
@@ -50,7 +50,6 @@ jobs:
 
       - name: Terraform Apply
         run: terraform apply -auto-approve "aks.multistage.tfplan"
-
 
       - name: The job has failed or was cancelled, so we break terraform.tfstate blob lease
         uses: azure/CLI@v1
