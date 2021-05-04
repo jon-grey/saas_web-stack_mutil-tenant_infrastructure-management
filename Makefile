@@ -10,7 +10,7 @@ submit-deployments:
 
 commit:
 	git add --all
-	git commit -m "Lazy update at $(date)."
-	git push --set-upstream origin $(git rev-parse --abbrev-ref HEAD)
+	git commit -m "Lazy update at $(shell date)."
+	git push --set-upstream origin $(shell git rev-parse --abbrev-ref HEAD)
 
 all: setup-deployments submit-deployments
