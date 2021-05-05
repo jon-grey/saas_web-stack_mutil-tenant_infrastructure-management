@@ -1,5 +1,6 @@
 
-
+# TODO move parent zone to different resource group
+# TODO optional use providers from different subscription
 
 resource "azurerm_public_ip" "this" {
   name                = "ingressStaticIpName"
@@ -14,7 +15,8 @@ resource "azurerm_public_ip" "this" {
 }
 
 
-resource "azurerm_dns_zone" "zone" {
+resource "azurerm_dns_zone" "parent" {
+  # provider            = azurerm.parent
   name                = var.az_custom_domain
   resource_group_name = var.az_resource_group_name
   depends_on = [
@@ -23,13 +25,28 @@ resource "azurerm_dns_zone" "zone" {
 
 }
 
-resource "azurerm_dns_zone" "subzone" {
+resource "azurerm_dns_zone" "child" {
+  # provider            = azurerm.child
   name                = "azure.${var.az_custom_domain}"
   resource_group_name = var.az_resource_group_name
   depends_on = [
-      azurerm_dns_zone.zone,
+      azurerm_dns_zone.parent,
   ]
 
+}
+
+resource "azurerm_dns_ns_record" "child_parent" {
+  # provider            = azurerm.parent
+  name                = lower("azure")
+  zone_name           = lower(var.az_custom_domain)
+  resource_group_name = var.az_resource_group_name
+  ttl                 = 300
+
+  records = azurerm_dns_zone.child.name_servers
+
+  depends_on = [
+      azurerm_dns_zone.child,
+  ]
 }
 
 # az network dns record-set a add-record \
@@ -44,9 +61,9 @@ resource "azurerm_dns_zone" "subzone" {
 #      --record-set-name '*' \
 #      --ipv4-address "20.79.66.102"
 
-resource "azurerm_dns_a_record" "zone_root" {
+resource "azurerm_dns_a_record" "parent_root" {
   name                = "@"
-  zone_name           = azurerm_dns_zone.zone.name
+  zone_name           = azurerm_dns_zone.parent.name
   resource_group_name = var.az_resource_group_name
   ttl = 300
 
@@ -54,14 +71,14 @@ resource "azurerm_dns_a_record" "zone_root" {
 
 
   depends_on = [
-      azurerm_dns_zone.zone,
+      azurerm_dns_zone.parent,
   ]
 
 }
 
-resource "azurerm_dns_a_record" "subzone_root" {
+resource "azurerm_dns_a_record" "child_root" {
   name                = "@"
-  zone_name           = azurerm_dns_zone.subzone.name
+  zone_name           = azurerm_dns_zone.child.name
   resource_group_name = var.az_resource_group_name
   ttl = 300
 
@@ -69,15 +86,15 @@ resource "azurerm_dns_a_record" "subzone_root" {
 
 
   depends_on = [
-      azurerm_dns_zone.subzone,
+      azurerm_dns_zone.child,
   ]
 
 }
 
 
-resource "azurerm_dns_a_record" "subzone_all" {
+resource "azurerm_dns_a_record" "child_all" {
   name                = "*"
-  zone_name           = azurerm_dns_zone.subzone.name
+  zone_name           = azurerm_dns_zone.child.name
   resource_group_name = var.az_resource_group_name
   ttl = 300
 
@@ -85,7 +102,7 @@ resource "azurerm_dns_a_record" "subzone_all" {
 
 
   depends_on = [
-      azurerm_dns_zone.subzone,
+      azurerm_dns_zone.child,
   ]
 
 }

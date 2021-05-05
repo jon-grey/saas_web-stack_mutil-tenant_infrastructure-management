@@ -131,7 +131,7 @@ module "b_aks_cert_manager" {
   ingress_controller_class                     = var.az_aks_ingress_controller_class
   ingress_namespace                            = var.az_aks_ingress_namespace
   ingress_certificate_letsencrypt_staging_name = var.az_aks_ingress_certificate_letsencrypt_staging_name
-  az_custom_domain                             = module.b_custom_domain_for_aks_ingress.azurerm_dns_subzone
+  az_custom_domain                             = module.b_custom_domain_for_aks_ingress.azurerm_dns_child_zone
 
   host                   = module.a_aks_cluster.host
   client_key             = module.a_aks_cluster.client_key
@@ -176,7 +176,7 @@ module "c_aks_multistage_envs" {
   ingress_namespace                    = var.az_aks_ingress_namespace
   ingress_controller_class             = var.az_aks_ingress_controller_class
   ingress_certificate_letsencrypt_name = var.az_aks_ingress_certificate_letsencrypt_name
-  az_custom_domain                     = module.b_custom_domain_for_aks_ingress.azurerm_dns_subzone
+  az_custom_domain                     = module.b_custom_domain_for_aks_ingress.azurerm_dns_child_zone
 
   ingress_ip_address = module.b_custom_domain_for_aks_ingress.ip_address
 
