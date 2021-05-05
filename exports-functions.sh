@@ -50,9 +50,12 @@ function terraform_test()
         terraform workspace new multistage || true
         terraform workspace select multistage
 
-        cowsay "Validate terraform confif files $PWD..."
+        cowsay "Validate terraform config files $PWD..."
         terraform validate
         echo "... with RC ==> $?"
+
+        cowsay "Refresh terraform $PWD..."
+        terraform refresh
 
         cowsay "Plan terraform $PWD..."
         mkdir -p ".files"

@@ -118,8 +118,6 @@ module "b_custom_domain_for_aks_ingress" {
   ]
 }
 
-
-
 #######################################################################################
 #### STAGE B 1.0 - Deploy ASK/cert-manager-ns/cert-manager
 #######################################################################################
@@ -133,7 +131,7 @@ module "b_aks_cert_manager" {
   ingress_controller_class                     = var.az_aks_ingress_controller_class
   ingress_namespace                            = var.az_aks_ingress_namespace
   ingress_certificate_letsencrypt_staging_name = var.az_aks_ingress_certificate_letsencrypt_staging_name
-  az_custom_domain                     = var.az_custom_domain
+  az_custom_domain                             = module.b_custom_domain_for_aks_ingress.azurerm_dns_subzone
 
   host                   = module.a_aks_cluster.host
   client_key             = module.a_aks_cluster.client_key
@@ -142,6 +140,7 @@ module "b_aks_cert_manager" {
 
   depends_on = [
     module.a_aks_cluster.azurerm_kubernetes_cluster,
+    module.b_custom_domain_for_aks_ingress,
     local_file.aksconfig
   ]
 }
@@ -175,9 +174,9 @@ module "c_aks_multistage_envs" {
 
   # ingress_name = var.ingress_name
   ingress_namespace                    = var.az_aks_ingress_namespace
-  az_custom_domain                     = var.az_custom_domain
   ingress_controller_class             = var.az_aks_ingress_controller_class
   ingress_certificate_letsencrypt_name = var.az_aks_ingress_certificate_letsencrypt_name
+  az_custom_domain                     = module.b_custom_domain_for_aks_ingress.azurerm_dns_subzone
 
   ingress_ip_address = module.b_custom_domain_for_aks_ingress.ip_address
 

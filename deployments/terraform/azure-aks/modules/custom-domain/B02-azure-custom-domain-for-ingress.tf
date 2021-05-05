@@ -14,11 +14,20 @@ resource "azurerm_public_ip" "this" {
 }
 
 
-resource "azurerm_dns_zone" "this" {
+resource "azurerm_dns_zone" "zone" {
   name                = var.az_custom_domain
   resource_group_name = var.az_resource_group_name
   depends_on = [
       azurerm_public_ip.this,
+  ]
+
+}
+
+resource "azurerm_dns_zone" "subzone" {
+  name                = "azure.${var.az_custom_domain}"
+  resource_group_name = var.az_resource_group_name
+  depends_on = [
+      azurerm_dns_zone.zone,
   ]
 
 }
@@ -35,9 +44,9 @@ resource "azurerm_dns_zone" "this" {
 #      --record-set-name '*' \
 #      --ipv4-address "20.79.66.102"
 
-resource "azurerm_dns_a_record" "this" {
-  name                = "*"
-  zone_name           = azurerm_dns_zone.this.name
+resource "azurerm_dns_a_record" "zone_root" {
+  name                = "@"
+  zone_name           = azurerm_dns_zone.zone.name
   resource_group_name = var.az_resource_group_name
   ttl = 300
 
@@ -45,7 +54,38 @@ resource "azurerm_dns_a_record" "this" {
 
 
   depends_on = [
-      azurerm_dns_zone.this,
+      azurerm_dns_zone.zone,
+  ]
+
+}
+
+resource "azurerm_dns_a_record" "subzone_root" {
+  name                = "@"
+  zone_name           = azurerm_dns_zone.subzone.name
+  resource_group_name = var.az_resource_group_name
+  ttl = 300
+
+  records = [azurerm_public_ip.this.ip_address]
+
+
+  depends_on = [
+      azurerm_dns_zone.subzone,
+  ]
+
+}
+
+
+resource "azurerm_dns_a_record" "subzone_all" {
+  name                = "*"
+  zone_name           = azurerm_dns_zone.subzone.name
+  resource_group_name = var.az_resource_group_name
+  ttl = 300
+
+  records = [azurerm_public_ip.this.ip_address]
+
+
+  depends_on = [
+      azurerm_dns_zone.subzone,
   ]
 
 }

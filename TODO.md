@@ -1,6 +1,14 @@
 
 # TODO
 
+## Multiregion with Traffic Manager and Front Door
+
+[Multi-region N-tier application - Azure Architecture Center](https://docs.microsoft.com/en-us/azure/architecture/reference-architectures/n-tier/multi-region-sql-server)
+
+## Bastion for AKS and VM
+
+[Azure Bastion &#8211; A real life use case](https://azapril.dev/2019/11/21/azure-bastion/)
+
 ## Split DevOps and Admin
 
 - [ ] hide secrets from DevOps

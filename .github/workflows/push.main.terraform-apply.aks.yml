@@ -45,6 +45,9 @@ jobs:
       - name: Terraform Validate
         run: terraform validate
 
+      - name: Terraform Refresh
+        run: terraform refresh
+        
       - name: Terraform Plan
         run: terraform plan -out="aks.multistage.tfplan"
 
