@@ -77,7 +77,7 @@ function terraform_deploy()
 
     echo "
     ###########################################################################
-    #### TEST TERRAFORM WITH: fmt, init, validate, plan
+    #### DEPLOY TERRAFORM WITH: apply
     #### DEPLOYMENT: $DEPLOYMENT
     ###########################################################################"
     (

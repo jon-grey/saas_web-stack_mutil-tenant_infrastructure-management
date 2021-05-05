@@ -1,5 +1,5 @@
 
-date                        = "Tue May  4 22:59:11 CEST 2021"
+date                        = "Wed May  5 05:12:49 CEST 2021"
 
 letencrypt_email            = "robert.grzelka@outlook.com"
 az_custom_domain            = "lubiewarzywka.pl"
